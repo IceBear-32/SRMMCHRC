@@ -1,0 +1,232 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deccaan Music - Music Therapy System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <!-- jsPDF for PDF generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    <!-- Favicon support -->
+    <link rel="icon" href="c.png" id="favicon">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Login Container -->
+    <div class="login-container" id="loginContainer">
+        <div class="login-form">
+            <div class="logo">
+                <img src="b.png" alt="TSRMMCHRC" id="loginLogo">
+                <h1>TSRMMCHRC Music scheduler</h1>
+                <p>Deccaan-Music</p>
+            </div>
+            <h2>Login</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" placeholder="Enter your username" required>
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Enter your password" required>
+                    <i class="fas fa-lock"></i>
+                </div>
+                <button type="submit" class="btn btn-block">Login</button>
+                <div class="error-message" id="loginError">Invalid username or password. Please try again.</div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Authentication Modal -->
+    <div class="modal" id="authModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Authentication Required</h2>
+                <button class="modal-close" id="authModalClose">&times;</button>
+            </div>
+            <p>Please enter your password to continue:</p>
+            <div class="form-group">
+                <input type="password" id="authPassword" class="form-control" placeholder="Enter your password">
+            </div>
+            <div class="error-message" id="authError">Invalid password. Please try again.</div>
+            <button class="btn btn-block" id="authSubmit">Submit</button>
+        </div>
+    </div>
+
+    <!-- App Container -->
+    <div class="app-container" id="appContainer">
+        <header>
+            <div class="header-content">
+                <div class="user-actions">
+                    <span id="welcomeUser">Welcome, User</span>
+                    <button class="btn" id="logoutBtn">Logout</button>
+                </div>
+                <div class="logo-container">
+                    <img src="b.png" alt="Deccaan Music Logo" id="headerLogo">
+                    <h1>TSRMMCHRC Music scheduler</h1>
+                </div>
+                <div class="date-time">
+                    <div class="time" id="currentTime">00:00:00</div>
+                    <div class="date" id="currentDate">Monday, January 1, 2023</div>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <div class="dashboard">
+                <!-- Player Card -->
+                <div class="card player-container">
+                    <div class="player-card">
+                        <div class="card-header">
+                            <h2>Now Playing</h2>
+                            <i class="fas fa-music icon"></i>
+                        </div>
+                        <div class="song-info">
+                            <div class="song-cover">
+                                <img id="currentSongCover" src="c.png" alt="Song Cover">
+                            </div>
+                            <div class="song-details">
+                                <h3 id="currentSongTitle">No song playing</h3>
+                                <p id="currentSongArtist">Unknown Artist</p>
+                                <p id="currentSongAlbum">Unknown Album</p>
+                            </div>
+                        </div>
+                        <div class="player-controls">
+                            <div class="control-buttons">
+                                <button class="control-btn" id="prevBtn" title="Previous"><i class="fas fa-step-backward"></i></button>
+                                <button class="control-btn play-pause" id="playPauseBtn" title="Play/Pause"><i class="fas fa-play"></i></button>
+                                <button class="control-btn" id="nextBtn" title="Next"><i class="fas fa-step-forward"></i></button>
+                                <button class="control-btn" id="loopBtn" title="Loop"><i class="fas fa-redo"></i></button>
+                            </div>
+                            <div class="progress-container">
+                                <div class="progress-bar" id="progressBar">
+                                    <div class="progress" id="progress"></div>
+                                </div>
+                                <div class="time-display">
+                                    <span id="currentTimeDisplay">0:00</span>
+                                    <span id="totalTimeDisplay">0:00</span>
+                                </div>
+                            </div>
+                            <div class="volume-container">
+                                <button class="control-btn" id="muteBtn" title="Mute"><i class="fas fa-volume-up"></i></button>
+                                <div class="volume-slider" id="volumeSlider">
+                                    <div class="volume-level" id="volumeLevel"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="equalizer" id="equalizer">
+                            <!-- Equalizer bars will be added dynamically -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Statistics</h2>
+                        <i class="fas fa-chart-bar icon"></i>
+                    </div>
+                    <div class="stats-container">
+                        <div class="stat-card">
+                            <div class="value" id="totalSongs">0</div>
+                            <div class="label">Total Songs</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="value" id="totalPlayed">0</div>
+                            <div class="label">Songs Played</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="value" id="totalDuration">0:00</div>
+                            <div class="label">Total Duration</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="value" id="scheduledCount">0</div>
+                            <div class="label">Scheduled</div>
+                        </div>
+                    </div>
+                    <div class="countdown">
+                        <i class="fas fa-clock"></i>
+                        <span id="nextScheduleTime">No upcoming schedule</span>
+                    </div>
+                    <button class="btn btn-block download-btn" id="downloadScheduleBtn">
+                        <i class="fas fa-download"></i> Download Music Schedule
+                    </button>
+                </div>
+
+                <!-- Song List Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Song Library</h2>
+                        <i class="fas fa-list icon"></i>
+                    </div>
+                    <div class="song-list" id="songList">
+                        <!-- Songs will be added dynamically -->
+                    </div>
+                </div>
+
+                <!-- Scheduler Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Schedule Music</h2>
+                        <i class="fas fa-calendar-alt icon"></i>
+                    </div>
+                    <div id="schedulerAlert" class="alert hidden"></div>
+                    <form class="scheduler-form" id="schedulerForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="scheduleSong">Select Song</label>
+                                <select id="scheduleSong" required class="form-control">
+                                    <!-- Options will be added dynamically -->
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="scheduleDate">Date</label>
+                                <input type="text" id="scheduleDate" class="form-control" placeholder="Select date">
+                            </div>
+                            <div class="form-group">
+                                <label for="scheduleTime">Time</label>
+                                <input type="time" id="scheduleTime" required class="form-control">
+                            </div>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="loopSchedule">
+                            <label for="loopSchedule">Loop this song</label>
+                        </div>
+                        <div class="form-group hidden" id="endTimeGroup">
+                            <label for="scheduleEndTime">End Time</label>
+                            <input type="time" id="scheduleEndTime" class="form-control">
+                        </div>
+                        <button type="submit" class="btn btn-block">Add to Schedule</button>
+                    </form>
+                </div>
+
+                <!-- Scheduled List Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Scheduled Playlist</h2>
+                        <i class="fas fa-clock icon"></i>
+                    </div>
+                    <div class="scheduled-list" id="scheduledList">
+                        <!-- Scheduled songs will be added dynamically -->
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>&copy; 2025 Deccaanow Corp. All rights reserved. Deccaan Music A product of Deccaanow Corp </p>
+        </footer>
+    </div>
+
+    <!-- Audio Element -->
+    <audio id="audioPlayer"></audio>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="script.js"></script>
+</body>
+</html>
