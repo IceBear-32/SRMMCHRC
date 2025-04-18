@@ -34,7 +34,7 @@ let scheduledSongs = [
     {
         songId: 1,
         date: 'daily',
-        time: "17:45:00", // Exact time with seconds for precision
+        time: "08:45:00", // Exact time with seconds for precision
         played: false,
         fixed: true,
         loop: false
